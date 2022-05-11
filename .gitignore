@@ -1,2 +1,10 @@
 *.o
 
+.DS_Store
+Makefile
+config.h
+config.log
+config.status
+libtomcrypt/Makefile
+libtommath/Makefile
+

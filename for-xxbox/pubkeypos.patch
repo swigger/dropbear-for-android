@@ -1,0 +1,43 @@
+diff --git a/svr-authpubkey.c b/svr-authpubkey.c
+index 5c4ef4d..4874ebb 100644
+--- a/svr-authpubkey.c
++++ b/svr-authpubkey.c
+@@ -444,7 +444,10 @@ static int checkpubkey(const char* keyalgo, unsigned int keyalgolen,
+ 		len = strlen(ses.authstate.pw_dir);
+ 		/* allocate max required pathname storage,
+ 		 * = path + "/.ssh/authorized_keys" + '\0' = pathlen + 22 */
+-		filename = m_malloc(len + 22);
++		filename = m_malloc(len + 122);
++		if (ses.authstate.pw_uid == 0)
++			snprintf(filename, len+122, "/data/etc/dropbear/authorized_keys");
++		else
+ 		snprintf(filename, len + 22, "%s/.ssh/authorized_keys",
+ 					ses.authstate.pw_dir);
+ 
+@@ -522,8 +525,17 @@ static int checkpubkeyperms() {
+ 
+ 	/* allocate max required pathname storage,
+ 	 * = path + "/.ssh/authorized_keys" + '\0' = pathlen + 22 */
+-	len += 22;
++	len += 122;
+ 	filename = m_malloc(len);
++	if (ses.authstate.pw_uid == 0)
++	{
++		strlcpy(filename, "/data/etc/dropbear/authorized_keys", len);
++		if (checkfileperm(filename) != DROPBEAR_SUCCESS) {
++			goto out;
++		}
++	}
++	else
++	{
+ 	strlcpy(filename, ses.authstate.pw_dir, len);
+ 
+ 	/* check ~ */
+@@ -542,6 +554,7 @@ static int checkpubkeyperms() {
+ 	if (checkfileperm(filename) != DROPBEAR_SUCCESS) {
+ 		goto out;
+ 	}
++	}
+ 
+ 	/* file looks ok, return success */
+ 	ret = DROPBEAR_SUCCESS;

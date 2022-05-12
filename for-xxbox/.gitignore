@@ -1,0 +1,16 @@
+XXX/
+*.tmp
+*.o
+.DS_Store
+
+Makefile
+config.*
+libtomcrypt/
+libtommath/
+
+dbclient
+default_options_guard.h
+dropbear
+dropbearconvert
+dropbearkey
+scp

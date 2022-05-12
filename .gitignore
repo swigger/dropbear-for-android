@@ -1,10 +1,15 @@
 *.o
-
+*.a
 .DS_Store
+
+
+# built files
+dbclient
+dropbear
+dropbearconvert
+dropbearkey
+scp
+config.*
 Makefile
-config.h
-config.log
-config.status
 libtomcrypt/Makefile
 libtommath/Makefile
-

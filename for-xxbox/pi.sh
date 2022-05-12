@@ -4,6 +4,7 @@
 
 source ~/.bashrc
 prepend_path /opt/pi/cross-pi-gcc-10.2.0-2/bin
+SCRIPT_DIR=$(cd  "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
 prepare_files(){
 	mkdir -p XXX
@@ -77,6 +78,13 @@ build_main(){
 	make -j$(nproc)
 	unset CFLAGS
 	unset LDFLAGS
+}
+
+bmake(){
+	CMD=` "$@" -v 2>&1 | grep 'collect2 '`
+	CMD1=$(echo $CMD | sed -E "s# -lgcc_s # $SCRIPT_DIR/XXX/libgcc_s.so.1 #g" | sed -E s"# -lc # $SCRIPT_DIR/hack_pi1.o $SCRIPT_DIR/XXX/libc.so #g" | sed -E "s# -lcrypt # $SCRIPT_DIR/XXX/libcrypt.so.1 #")
+	echo $CMD1
+	$CMD1
 }
 
 xmake(){

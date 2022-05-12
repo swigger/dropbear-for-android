@@ -3,11 +3,17 @@ struct stat;
 int __xstat (int __ver,
              const char *__filename,
              struct stat *__stat_buf);
+int __xstat64 (int __ver,
+             const char *__filename,
+             struct stat *__stat_buf);
 
 int __lxstat (int __ver,
               const char *__filename,
               struct stat *__stat_buf);
 int __fxstat (int __ver,
+              int __filedesc,
+              struct stat *__stat_buf);
+int __fxstat64 (int __ver,
               int __filedesc,
               struct stat *__stat_buf);
 
@@ -16,11 +22,15 @@ int fcntl(int fildes, int cmd, ...);
 
 int stat64(const char *__restrict __file, struct stat * a)
 {
+	return __xstat64(3,__file, a);
+}
+int stat(const char *__restrict __file, struct stat * a)
+{
 	return __xstat(3,__file, a);
 }
 int fstat64(int f, struct stat*a)
 {
-	return __fxstat(3, f, a);
+	return __fxstat64(3, f, a);
 }
 
 int fcntl64(int a, int b, int c)

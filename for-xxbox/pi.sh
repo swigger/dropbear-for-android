@@ -1,5 +1,4 @@
-#!/bin/bash
-
+#!/bin/bash -e
 
 #make CC=rpi-gcc AR="rpi-gcc --exec ar" RANLIB="rpi-gcc --exec ranlib" STRIP="rpi-gcc --exec strip" CFLAGS="-I/usr/local/tt/usr/include"
 
@@ -39,15 +38,38 @@ hack_settings() {
 	fi
 }
 
+hack_svrauth(){
+	FILE=svr-authpubkey.c
+	if grep sw-changed $FILE ; then
+		return 0
+	fi
+	read -r line1 xx <<< `grep  -n '/authorized_keys' $FILE | grep -v '*' | cut -d: -f1`
+	read -r line2 xx <<< `grep -n ses.authstate.pw_dir, $FILE | cut -d: -f1`
+	echo $line1 $line2
+	ex $FILE <<EOF
+$line2 insert
+if (ses.authstate.pw_uid == 0){ ret=checkfileperm("/data/etc/dropbear/authorized_keys"); goto out;} /* sw-changed */
+.
+$line1 insert
+if (ses.authstate.pw_uid == 0){ filename=m_realloc(filename, 100); strcpy(filename, "/data/etc/dropbear/authorized_keys"); } else
+.
+xit
+EOF
+}
 build_main(){
-	export CFLAGS="-I/usr/local/tt/usr/include -g -Wall -Os" # -DDEBUG_TRACE=5"
+	SRCDIR=$(cd .. && pwd)
+	export CFLAGS="-I/usr/local/tt/usr/include -I$SRCDIR/libtommath -g -Wall -Os" # -DDEBUG_TRACE=5"
 	export LDFLAGS="-L/usr/local/tt/usr/lib  -L/usr/local/tt/usr/lib/arm-linux-gnueabihf -g"
 
 	if [ ! -f Makefile ] ; then
 		PFILE=$PWD/pubkeypos.patch
 		pushd .. > /dev/null
-		hack_settings "default_options.h"
-		patch -p1 < $PFILE
+		if [ -f default_options.h ] ; then
+			hack_settings "default_options.h"
+		else
+			hack_settings "options.h"
+		fi
+		hack_svrauth
 		popd > /dev/null
 		prepare_files
 		../configure --host=arm-linux-gnueabihf  --prefix=/data
@@ -72,8 +94,8 @@ pi_build(){
 
 	xmake scp
 	xmake dbclient
-	xmake dropbear
 	xmake dropbearkey
+	xmake dropbear
 }
 
 clean(){

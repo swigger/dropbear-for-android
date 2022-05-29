@@ -90,7 +90,7 @@ bmake(){
 xmake(){
 	rm -f "$1"
 	CMD=`make "$1" CC="arm-linux-gnueabihf-gcc -v" 2>&1 | grep 'collect2 '`
-	CMD1=$(echo $CMD | sed -E s'/ -lgcc_s / XXX\/libgcc_s.so.1 /g' | sed -E s"/ -lc / hack_pi1.o XXX\/libc.so /g" | sed -E s'! -lcrypt ! XXX/libcrypt.so.1 !')
+	CMD1=$(echo $CMD | sed -E s"# -lgcc_s # $SCRIPT_DIR/XXX/libgcc_s.so.1 #g" | sed -E s"# -lc # $SCRIPT_DIR/hack_pi1.o $SCRIPT_DIR/XXX/libc.so #g" | sed -E s"# -lcrypt # $SCRIPT_DIR/XXX/libcrypt.so.1 #")
 	echo $CMD1
 	$CMD1
 }

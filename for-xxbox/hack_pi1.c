@@ -3,8 +3,8 @@
 #include <syscall.h>
 #include <unistd.h>
 #include <stddef.h>
+#include <stdio.h>
 
-extern int vsnprintf(char *a1, int a2, char *fmt, va_list ap);
 
 int __snprintf(char *a1, int a2, char * fmt, ...)
 {

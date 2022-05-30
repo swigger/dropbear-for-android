@@ -10,6 +10,9 @@ int __xstat64 (int __ver,
 int __lxstat (int __ver,
               const char *__filename,
               struct stat *__stat_buf);
+int __lxstat64 (int __ver,
+              const char *__filename,
+              struct stat *__stat_buf);
 int __fxstat (int __ver,
               int __filedesc,
               struct stat *__stat_buf);
@@ -31,6 +34,10 @@ int stat(const char *__restrict __file, struct stat * a)
 int fstat64(int f, struct stat*a)
 {
 	return __fxstat64(3, f, a);
+}
+int lstat64(const char * f, struct stat*a)
+{
+	return __lxstat64(3, f, a);
 }
 
 int fcntl64(int a, int b, int c)

@@ -3,7 +3,7 @@
 #make CC=rpi-gcc AR="rpi-gcc --exec ar" RANLIB="rpi-gcc --exec ranlib" STRIP="rpi-gcc --exec strip" CFLAGS="-I/usr/local/tt/usr/include"
 
 source ~/.bashrc
-prepend_path /opt/pi/cross-pi-gcc-10.2.0-2/bin
+prepend_path /opt/pi/cross-pi-gcc-10.2.0-2/bin || true
 SCRIPT_DIR=$(cd  "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
 prepare_files(){

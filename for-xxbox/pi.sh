@@ -31,7 +31,7 @@ EOF
 }
 
 hack_settings() {
-	cat $1 | sed -e 's!"/etc/dropbear/!"/data/etc/dropbear/!' | sed -e 's!"/usr/bin/dbclient!"/data/bin/dbclient!'   > $1.tmp
+	cat $1 | sed -e 's!"/etc/dropbear/!"/data/root/etc/dropbear/!' | sed -e 's!"/usr/bin/dbclient!"/data/root/bin/dbclient!'   > $1.tmp
 	if diff $1 $1.tmp ; then
 		rm -f $1.tmp
 	else
@@ -49,10 +49,10 @@ hack_svrauth(){
 	echo $line1 $line2
 	ex $FILE <<EOF
 $line2 insert
-if (ses.authstate.pw_uid == 0){ ret=checkfileperm("/data/etc/dropbear/authorized_keys"); goto out;} /* sw-changed */
+if (ses.authstate.pw_uid == 0){ ret=checkfileperm("/data/root/etc/dropbear/authorized_keys"); goto out;} /* sw-changed */
 .
 $line1 insert
-if (ses.authstate.pw_uid == 0){ filename=m_realloc(filename, 100); strcpy(filename, "/data/etc/dropbear/authorized_keys"); } else
+if (ses.authstate.pw_uid == 0){ filename=m_realloc(filename, 100); strcpy(filename, "/data/root/etc/dropbear/authorized_keys"); } else
 .
 xit
 EOF

@@ -1,11 +1,7 @@
-CC=arm-linux-gnueabihf-gcc
-CXX=$(CC)
-
 all:XXX/libc_nonshared.a
-
 
 XXX/libc_nonshared.a: elf-init.o hack_pi.o
 	arm-linux-gnueabihf-ar rcs $@ $^
 
 %.o:%.c
-	$(CC) -c -o $@ $<
+	make $@
